@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
+
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -12,7 +13,8 @@ import (
 )
 
 type CommandRequest struct {
-	Command string `json:"command"`
+	Command string   `json:"command"`
+	Args    []string `json:"args,omitempty"`
 }
 
 type CommandResponse struct {
@@ -20,37 +22,52 @@ type CommandResponse struct {
 	Error  string `json:"error,omitempty"`
 }
 
-func executeCommand(cmd string) (string, error) {
-	parts := strings.Fields(cmd)
-	name := parts[0]
-	args := parts[1:]
-
-	out, err := exec.Command(name, args...).CombinedOutput()
+func executeCommand(cmd string, args []string) (string, error) {
+	out, err := exec.Command(cmd, args...).CombinedOutput()
 	return string(out), err
 }
 
 func commandHandler(w http.ResponseWriter, r *http.Request) {
 	var cmdReq CommandRequest
 
+	// Attempt to decode the JSON body if present
 	if r.Body != nil {
 		defer r.Body.Close()
 		err := json.NewDecoder(r.Body).Decode(&cmdReq)
-		if err != nil {
+		if err != nil && err.Error() != "EOF" { // Ignore EOF error for empty body
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
 		}
 	}
 
-	if cmdReq.Command == "" {
-		cmdReq.Command = r.URL.Query().Get("command")
+	// Log request details for debugging
+	fmt.Println("Received request:", r.Method, r.URL)
+
+	// Determine the command and args from JSON body or query parameter
+	var cmd string
+	var args []string
+
+	if cmdReq.Command != "" {
+		cmd = cmdReq.Command
+		args = cmdReq.Args
+	} else {
+		cmd = r.URL.Query().Get("command")
+		if cmd != "" {
+			parts := strings.Fields(cmd) // Split the command and arguments
+			cmd = parts[0]               // Command is the first part
+			if len(parts) > 1 {
+				args = parts[1:] // Remaining parts are arguments
+			}
+		}
 	}
 
-	if cmdReq.Command == "" {
+	// If no command was provided, return an error
+	if cmd == "" {
 		http.Error(w, "Command is required", http.StatusBadRequest)
 		return
 	}
 
-	output, err := executeCommand(cmdReq.Command)
+	output, err := executeCommand(cmd, args)
 	response := CommandResponse{Output: output}
 
 	if err != nil {
@@ -66,9 +83,9 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/cmd", commandHandler).Methods("POST")
 
-	// Applying the CORS middleware to our router
+	// Apply the CORS middleware to our router
 	handler := cors.Default().Handler(r)
-	// http.Handle("/", r)
+
 	fmt.Println("Server started at :8080")
 	http.ListenAndServe(":8080", handler)
 }

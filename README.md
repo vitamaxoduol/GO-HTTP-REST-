@@ -17,5 +17,13 @@ Return the output of the command as a response.
 - With the module initialized, install the Gorilla Mux package `go get github.com/gorilla/mux` 
 - Create a new file called `main.go` and add the following code
 - Run the Go server: `go run main.go`
-- Open a browser and navigate to `http://localhost:8080/api/cmd` t
+- Included the index.html when opened on a browser and navigated and the command is entered the output will be displayed on the browser but only when using `With JSON Body Curl POST command`.
+- You can test the API using curl:
+### Testing the API POST REQUEST
+- Using JSON body:
+`curl -v -X POST -H "Content-Type: application/json" -d '{"command":"ls","args":["-la"]}' http://localhost:8080/api/cmd`
+
+- Using query parameter:
+`curl -v -X POST "http://localhost:8080/api/cmd?command=ls%20-la"`
+
 
