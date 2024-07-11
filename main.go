@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
-
 	"strings"
 
 	"github.com/gorilla/mux"
