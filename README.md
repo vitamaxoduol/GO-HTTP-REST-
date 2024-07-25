@@ -15,7 +15,7 @@ Return the output of the command as a response.
 - Downloading a binary release suitable for your system and then follow the installation instructions in GO documentation 
 - In the task directory, intialize the module: `go mod init GO-HTTP-REST-API`
 - With the module initialized, install the Gorilla Mux package `go get github.com/gorilla/mux` 
-- Create a new file called `main.go` and add the following code
+- Create a new file called `main.go` and add the following code in the file `main.go`
 - Run the Go server: `go run main.go`
 - You can test the API using curl:
 ### Testing the API POST REQUEST

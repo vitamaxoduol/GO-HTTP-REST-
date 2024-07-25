@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
-
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -22,11 +21,13 @@ type CommandResponse struct {
 	Error  string `json:"error,omitempty"`
 }
 
+// function to execute commands
 func executeCommand(cmd string, args []string) (string, error) {
 	out, err := exec.Command(cmd, args...).CombinedOutput()
 	return string(out), err
 }
 
+// handler function for the API
 func commandHandler(w http.ResponseWriter, r *http.Request) {
 	var cmdReq CommandRequest
 
@@ -73,12 +74,13 @@ func commandHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Error = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
-	}
+	} // Handle the error gracefully
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json") // Set other headers as needed
 	json.NewEncoder(w).Encode(response)
 }
 
+// main function to start the server
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/cmd", commandHandler).Methods("POST")
