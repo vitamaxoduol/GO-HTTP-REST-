@@ -20,10 +20,10 @@ Return the output of the command as a response.
 - You can test the API using curl:
 ### Testing the API POST REQUEST
 - Using JSON body:
-`curl -X POST -H "Content-Type: application/json" -d '{"command":"ls","args":["-la"]}' http://localhost:8080/api/cmd` hence output as shown in `![App Screenshot](images/Screenshot.2.png)`
+`curl -X POST -H "Content-Type: application/json" -d '{"command":"ls","args":["-la"]}' http://localhost:8080/api/cmd` hence output as shown in ![App Screenshot](images/Screenshot.2.png)
 
 - Using query parameter:
-`curl -v -X POST "http://localhost:8080/api/cmd?command=ls%20-la"` hence output shown in `![App Screenshot](images/Screenshot.3.png)`
+`curl -v -X POST "http://localhost:8080/api/cmd?command=ls%20-la"` hence output shown in ![App Screenshot](images/Screenshot.3.png)
 
 
 ## Testing with Kubernetes
@@ -34,26 +34,26 @@ Return the output of the command as a response.
 3. kubectl
 
 #### Steps
-**Start Minikube:**
+1. **Start Minikube:**
 `minikube start --driver=docker`
-**Check Minikube Status:**
+2. **Check Minikube Status:**
 `minikube status`
-**Set kubectl Context to Minikube:**
+3. **Set kubectl Context to Minikube:**
 `kubectl use-context minikube`
-**Verify kubectl Context:**
+4. **Verify kubectl Context:**
 `kubectl config get-contexts`
-**Use Minikube Context:**
+5. **Use Minikube Context:**
 `kubectl config use-context minikube`
-**Get Cluster Info:**
+6. **Get Cluster Info:**
 `kubectl cluster-info`
-**Dump Cluster Info:**
+7. **Dump Cluster Info:**
 `kubectl cluster-info dump`
-**Deploy the Application**
+8. **Deploy the Application**
 - Apply the Deployment Configuration:
 `kubectl apply -f deployment.yaml`
 - Verify Deployment and Service:
 `kubectl get pods`
-- Access the Service as illustrated in `![App Screenshot](images/Screenshot.1.png)`:
+- Access the Service as illustrated in ![App Screenshot](images/Screenshot.1.png):
 `minikube service go-app-service` 
 **Deployment Configuration**
 The deployment configuration are witten in the `deployment.yaml`
